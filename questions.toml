@@ -1,0 +1,13 @@
+# One pre-written question per slot, shown when that slot is missing.
+# They nudge you toward the phrasing Anthropic recommends. Your answer is used
+# word for word, so the better phrasing comes from you, not from a rewrite.
+
+objective = "What should Claude do? Start with a verb (for example: Write, Explain, Change)."
+context = "What's the background? Who is this for, what's the situation, and why does it matter?"
+inputs = "What material should Claude work on? Paste it in full. It is passed through word for word."
+requirements = "What must the result include or do? Put the most important first, and use numbered steps only if the order matters."
+constraints = "Any limits? Say what you want rather than what to avoid, and why."
+resources = "Which tools, libraries, or sources should Claude use or stay within?"
+output_format = "What should the result look like? Give the structure, length, and file type, and say whether you want the minimum or more than the basics."
+success_criteria = "How will you judge whether the result is right?"
+examples = "Any examples of what you want? 3 to 5 varied ones work best."

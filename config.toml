@@ -1,0 +1,90 @@
+# PromptGate settings. The thresholds are starting values, to be tuned from logs.
+
+[models]
+extraction = "claude-haiku-4-5-20251001"
+execution = "claude-sonnet-5"
+# Pinned on purpose: the thresholds below were chosen for this version.
+jev = "jev-1.13.0"
+
+# One entry per execution model you might switch to.
+# self_check adds "Before you finish, check your answer against the success criteria."
+# Check the model's prompting page before turning it on (Opus 5 over-verifies with it).
+# Checked 2026-09-30: the Sonnet 5 prompting page gives no advice against a self-check line.
+[execution_models."claude-sonnet-5"]
+self_check = true
+
+[execution_models."claude-opus-5"]
+self_check = false
+
+[thresholds]
+present_threshold = 0.5         # has_X below this means slot X is missing
+problem_confidence_min = 0.6    # below this, problem_type counts as "none"
+task_type_confidence_min = 0.5  # below this, use the lighter of Jev's top two task types
+large_output_threshold = 0.6    # expects_large_output at or above this turns on generation's checkpoint
+
+[limits]
+plan_max_tokens = 3000          # thinking tokens count toward this cap too
+execute_max_tokens = 64000      # execution streams, so a large cap is safe
+extract_max_tokens = 16000      # Haiku copies the prompt, so leave room for long prompts
+quote_grounding_tokens = 20000  # inputs this long get the quote-grounding line
+
+[paths]
+log_file = "logs/runs.jsonl"    # relative to this file's folder
+
+# Used when Jev can't be reached: the prompt goes as-is with the ambiguity rule
+# and no checkpoint, at this effort.
+[fallback]
+effort = "medium"
+
+# Task-type profiles.
+# checkpoint: "on", "off", or "if_large_output"
+# effort: "low", "medium", or "high"; the same value is used for planning and execution
+# default_role: sent as the system prompt unless the prompt states its own role
+
+[profiles.quick_question]
+weight = 1
+required = ["objective"]
+optional = ["context"]
+checkpoint = "off"
+effort = "low"
+default_role = ""
+
+[profiles.transformation]
+weight = 2
+required = ["objective", "inputs"]
+optional = ["output_format", "constraints"]
+checkpoint = "off"
+effort = "low"
+default_role = ""
+
+[profiles.explanation]
+weight = 3
+required = ["objective", "context"]
+optional = ["output_format", "constraints", "examples"]
+checkpoint = "off"
+effort = "medium"
+default_role = "You are a patient Python tutor for a first-year engineering student."
+
+[profiles.generation]
+weight = 4
+required = ["objective", "context", "requirements", "output_format"]
+optional = ["constraints", "resources", "success_criteria", "examples"]
+checkpoint = "if_large_output"
+effort = "medium"
+default_role = ""
+
+[profiles.analysis]
+weight = 5
+required = ["objective", "context", "inputs", "requirements", "output_format", "success_criteria"]
+optional = ["constraints", "resources", "examples"]
+checkpoint = "on"
+effort = "high"
+default_role = ""
+
+[profiles.multi_step_project]
+weight = 6
+required = ["objective", "context", "requirements", "constraints", "resources", "output_format", "success_criteria"]
+optional = ["inputs", "examples"]
+checkpoint = "on"
+effort = "high"
+default_role = ""

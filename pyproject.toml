@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promptgate"
+version = "0.1.0"
+description = "Checks a prompt before it reaches Claude, fills gaps with you, then runs it once."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=1.8",  # 1.x: output_config, messages.parse with output_format=Model
+    "typesafe-sdk>=0.7.1",  # 0.7.0 switched to pydantic; 0.7.1 checks the API key early
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+promptgate = "promptgate.cli:entry_point"
+
+[tool.setuptools]
+packages = ["promptgate"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]  # lets tests import promptgate from the project folder

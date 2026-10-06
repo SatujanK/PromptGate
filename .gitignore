@@ -1,0 +1,14 @@
+# Real API keys. Never commit this; .env.example (fake values) is committed instead.
+.env
+
+# Log lines contain full prompts, so they stay on this machine.
+logs/
+
+# Personal Claude Code settings for this machine
+.claude/settings.local.json
+
+# Python and tool caches
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv/

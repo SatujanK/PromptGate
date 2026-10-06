@@ -1,0 +1,45 @@
+Build a small command-line study planner in Python.
+
+Background: I'm a first-year engineering student. I have five modules this term (Calculus, Physics, Programming, Materials, and Engineering Drawing) and I keep losing track of what to revise and when. Exams start in six weeks. I want a tool I can run every evening in the terminal that tells me what to study tomorrow, so I stop wasting the first half hour of each session deciding. I'm learning Python, so I also want code I can read and change myself; it matters more that I understand it than that it's clever.
+
+What it must do, most important first:
+1. Store my modules, and for each one a list of topics. Each topic has a name, a difficulty from 1 (easy) to 3 (hard), and a confidence score from 0 (no idea) to 5 (could teach it).
+2. Generate tomorrow's plan: a list of study blocks for a day, given how many hours I say I have. Each block is 45 minutes long, followed by a 10-minute break. Hard topics I'm not confident about should come first, because I'm most focused early in the session. A topic shouldn't appear twice in one day.
+3. Let me record a session afterwards: which topic I studied and my new confidence score for it. The planner should use the updated score the next time it builds a plan.
+4. Show a simple progress summary per module: the number of topics, the average confidence, and the topics still below 3.
+5. Keep everything between runs in a single JSON file next to the script, so I can open it and see my data.
+6. Give a clear message, not a stack trace, if the JSON file is missing, empty, or damaged, and start fresh with an empty plan instead of crashing.
+
+How I want to use it from the terminal:
+- python planner.py add-module Physics
+- python planner.py add-topic Physics "Rotational dynamics" --difficulty 3 --confidence 1
+- python planner.py plan --hours 3
+- python planner.py record Physics "Rotational dynamics" --confidence 3
+- python planner.py progress
+
+Constraints, with the reasons:
+- Use only the Python standard library (argparse, json, pathlib, dataclasses), because the university lab computers don't let me install packages.
+- Keep it to one file of at most 150 lines, so I can read the whole thing in one sitting.
+- Use type hints and short docstrings on every function, because that's how our course asks us to write Python and I want to practise it.
+- Keep the planning rule simple and explainable in two sentences rather than clever, so I can predict what the plan will say before I run it.
+- Store confidence and difficulty as whole numbers, because I'll be editing the JSON file by hand sometimes.
+- Write dates in ISO format (YYYY-MM-DD) in the JSON file, so it sorts correctly and matches what my calendar app exports.
+
+Resources: Python 3.11 standard library only. The argparse documentation is the reference for the command-line part. No web frameworks, no GUI, no database, and no third-party packages.
+
+Output format: reply with the complete planner.py in a single code block, followed by at most five short bullet points explaining the planning rule and how the data is stored. Keep it minimal: no extra features beyond the list above, no tests, and no long explanations, because I'll ask follow-up questions myself.
+
+How I'll judge whether it's right:
+- All five example commands above run without errors on a fresh folder.
+- Running plan --hours 3 with a mix of topics gives three 45-minute blocks, hardest and least-confident topics first, with no topic repeated.
+- After record, the next plan reflects the new confidence score.
+- Deleting or corrupting the JSON file gives a friendly message and a fresh start, not a traceback.
+- The file is at most 150 lines, and I can explain what every function does after one read.
+
+Some extra detail about how I study, to help you choose sensible defaults:
+- I usually have between two and four hours on a weekday evening and up to six hours on a weekend day.
+- I prefer to start with the module I'm weakest in, then switch to something lighter, so that I don't spend a whole evening on a single subject and burn out.
+- Calculus and Physics overlap a lot, so it's fine if they appear on the same day.
+- Engineering Drawing is mostly practice, so its topics tend to have a lower difficulty but take longer.
+- I sometimes skip a day. If I haven't recorded anything for a while, the plan should still work from my current confidence scores; it doesn't need to track how many days have passed.
+- I don't need reminders, notifications, or a calendar view; just the plan in the terminal, one line per block, with the start time if I give one, for example plan --hours 3 --start 18:30.
